@@ -6,10 +6,13 @@ kernel:
     resource: ../src/Kernel.php
     type: annotation
 
-authentication_token:
-    path: /authentication_token
-    methods: ['POST']
-
+#route pour tester login et get token
 api_login_check:
     path: /api/login_check
+    controller: App\Controller\SecurityController::getTokenUser 
+
+# route pour la connection
+authentication_token:
+    path: /api/login
     methods: ['POST']
+    controller: App\Controller\SecurityController::login 

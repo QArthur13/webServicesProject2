@@ -12,9 +12,11 @@ security:
                 class: App\Entity\Account
                 property: email
     firewalls:
+       
         login:
             pattern: ^/api/login
             stateless: true
+           
             json_login:
                 check_path: /api/login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
@@ -24,8 +26,25 @@ security:
             pattern:   ^/api
             stateless: true
             jwt: ~
+      
 
     access_control:
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+    # Allows accessing the Swagger UI
+        - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY } 
+    #Tous les utilisateurs on un account peuvent login
+        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    #il faut être authentifié pour accéder à la liste des accounts, ajouter un accounts, accounts, ...
+        - { path: ^/api/accounts, roles: IS_AUTHENTICATED_FULLY } 
 
+   
+        # require ROLE_ADMIN for /admin*
+        #- { path: '^/admin', roles: ROLE_ADMIN }
+        # or require ROLE_ADMIN or IS_AUTHENTICATED_FULLY for /admin*
+        #- { path: '^/admin', roles: [IS_AUTHENTICATED_FULLY, ROLE_ADMIN] }
+        # the 'path' value can be any valid regular expression
+        # (this one will match URLs like /api/post/7298 and /api/comment/528491)
+        #- { path: ^/api/(film|comment)/\d+$, roles: ROLE_USER }
+        # matches /admin/users/*
+        #- { path: '^/admin/users', roles: ROLE_SUPER_ADMIN }
+        # matches /admin/* except for anything matching the above rule
+        #- { path: '^/admin', roles: ROLE_ADMIN }
