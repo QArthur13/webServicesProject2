@@ -25,7 +25,12 @@ class SecurityController extends AbstractController {
    */
   public function getTokenUser(UserInterface $user, JWTTokenManagerInterface $JWTManager)
   {
-   return new JsonResponse(['token' => $JWTManager->create($user)]);
+   return new JsonResponse([
+     'token' => $JWTManager->create($user),
+     'refresh'=>$JWTManager->createFromPayload()
+    
+    
+    ]);
   }
    
 }

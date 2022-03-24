@@ -1,22 +1,17 @@
 security:
     enable_authenticator_manager: true
     password_hashers:
-        # Use native password hasher, which auto-selects and migrates the best
-        # possible hashing algorithm (which currently is "bcrypt")
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # ...
+  
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
         users:
             entity:
                 class: App\Entity\Account
                 property: email
     firewalls:
-       
         login:
             pattern: ^/api/login
             stateless: true
-           
             json_login:
                 check_path: /api/login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
@@ -26,17 +21,39 @@ security:
             pattern:   ^/api
             stateless: true
             jwt: ~
-      
-
+        
+        api_token_refresh:
+            pattern: ^/api/token/refresh
+            stateless: true
+            refresh_jwt: ~
+        
     access_control:
-    # Allows accessing the Swagger UI
-        - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY } 
-    #Tous les utilisateurs on un account peuvent login
+
+    #Tous les utilisateurs on un account peuvent login 
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     #il faut être authentifié pour accéder à la liste des accounts, ajouter un accounts, accounts, ...
-        - { path: ^/api/accounts, roles: IS_AUTHENTICATED_FULLY } 
+        - { path: ^/api/accounts, roles: IS_AUTHENTICATED_FULLY, methods: [POST, PUT, PATCH, DELETE]} 
+    #On n'a pas besoin de s'authentifier pour refresh le token.
+        - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       # # Allows accessing the Swagger UI à tous
+         #     - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY } 
         # require ROLE_ADMIN for /admin*
         #- { path: '^/admin', roles: ROLE_ADMIN }
         # or require ROLE_ADMIN or IS_AUTHENTICATED_FULLY for /admin*

@@ -34,5 +34,29 @@ JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
 JWT_PASSPHRASE=Thanh
 ###< lexik/jwt-authentication-bundle ###
 
-The lazy anonymous mode prevents the session from being started if there is no need for authorization (i.e. explicit check for a user privilege). This is important to keep requests cacheable (see HTTP Cache).
-composer require --dev symfony/profiler-pack
+composer pour creer le refresh token
+composer require doctrine/orm doctrine/doctrine-bundle gesdinet/jwt-refresh-token-bundle
+
+# If using the MakerBundle:
+php bin/console make:migration
+# Without the MakerBundle:
+php bin/console doctrine:migrations:diff
+
+php bin/console doctrine:migrations:migrate
+
+
+
+# Useful Commands
+Revoke all invalid tokens
+If you want to revoke all invalid (datetime expired) refresh tokens you can execute:
+
+php bin/console gesdinet:jwt:clear
+The command optionally accepts a date argument which will delete all tokens older than the given time. This can be any value that can be parsed by the DateTime class.
+
+php bin/console gesdinet:jwt:clear 2015-08-08
+We recommend executing this command as a cronjob to remove invalid refresh tokens on an interval.
+
+Revoke a token
+If you want to revoke a single token you can use this command:
+
+php bin/console gesdinet:jwt:revoke TOKEN
