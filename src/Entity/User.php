@@ -30,6 +30,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $lastName;
 
+    #[ORM\Column(type: 'string', length: 16)]
+    private ?string $status;
+
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $create_at;
+
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $updateAt;
+
+    #[ORM\Column(type: 'uuid')]
+    private $uid;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +132,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreateAt(): ?\DateTimeInterface
+    {
+        return $this->create_at;
+    }
+
+    public function setCreateAt(\DateTimeInterface $create_at): self
+    {
+        $this->create_at = $create_at;
+
+        return $this;
+    }
+
+    public function getUpdateAt(): ?\DateTimeInterface
+    {
+        return $this->updateAt;
+    }
+
+    public function setUpdateAt(\DateTimeInterface $updateAt): self
+    {
+        $this->updateAt = $updateAt;
+
+        return $this;
+    }
+
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    public function setUid($uid): self
+    {
+        $this->uid = $uid;
 
         return $this;
     }

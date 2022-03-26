@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -57,7 +58,7 @@ class ApiUserController extends AbstractController
          */
         $mime = $this->getFormats($request->headers->get('Accept', 'application/json'));
 
-        return new Response($serializer->serialize($users, $mime), Response::HTTP_OK, [
+        return new Response($serializer->serialize($users, $mime, [DateTimeNormalizer::FORMAT_KEY => 'H:i:s d/m/Y']), Response::HTTP_OK, [
 
             'Content-Type' => ('xml' === $mime ? 'application/xml' : 'application/json')
 
@@ -203,7 +204,6 @@ class ApiUserController extends AbstractController
 
         }
 
-
         return new Response(
 
             $serializer->serialize(["message" => "Vous n'êtes pas autoriser à faire ça!"], $mime),
@@ -214,57 +214,4 @@ class ApiUserController extends AbstractController
 
     }
 
-    public function delete(Request $request, ManagerRegistry $managerRegistry, UserRepository $userRepository, int $id, SerializerInterface $serializer): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $mime = $this->getFormats($request->headers->get('Accept', 'application/json'));
-        $user = $userRepository->find($id);
-        $entityManager = $managerRegistry->getManager();
-        dd();
-
-
-        //On test pour savoir s'il s'agit du même Id pour afficher
-        if (!($user->getId() === $this->getUser()->getId())) {
-
-            //L'admin peut lui supprimmer ce qu'il veut, par contre
-            if ($this->isGranted('ROLE_ADMIN')) {
-
-                $entityManager->remove($user);
-                $entityManager->flush();
-
-                return new Response(
-
-                    $serializer->serialize(["message" => "Utilisateur supprimer"], $mime),
-                    Response::HTTP_OK,
-                    ["Content-Type" => ("xml" === $mime ? "application/xml" : "application/json")]
-
-                );
-
-            }
-
-        } else {
-
-            $entityManager->flush();
-
-            return new Response(
-
-                $serializer->serialize($user, $mime),
-                Response::HTTP_OK,
-                ["Content-Type" => ("xml" === $mime ? "application/xml" : "application/json")]
-
-            );
-
-        }
-
-
-        return new Response(
-
-            $serializer->serialize(["message" => "Vous n'êtes pas autoriser à faire ça!"], $mime),
-            Response::HTTP_FORBIDDEN,
-            ["Content-Type" => ("xml" === $mime ? "application/xml" : "application/json")]
-
-        );
-
-    }
 }

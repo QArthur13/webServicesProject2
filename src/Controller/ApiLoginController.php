@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +33,11 @@ class ApiLoginController extends AbstractController
 
         }
 
-        $token = "test45";
+        /*$key = InMemory::base64Encoded(base64_encode('test'));
+        $token = $key;
+        dump($token->passphrase());
+        dd();*/
+        $token = 'test-45';
 
         return new Response($serializer->serialize(
 

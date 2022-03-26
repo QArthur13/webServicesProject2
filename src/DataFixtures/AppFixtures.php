@@ -29,6 +29,9 @@ class AppFixtures extends Fixture
             ->setEmail('arthurPHP@youpi.fr')
             ->setPassword($this->passwordHasher->hashPassword($user, "Fr84!"))
             ->setRoles(['ROLE_ADMIN'])
+            ->setStatus('open')
+            ->setCreateAt(new \DateTime())
+            ->setUpdateAt(new \DateTime())
         ;
 
         $manager->persist($user);
